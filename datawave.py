@@ -17,7 +17,9 @@ client = Groq(api_key="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"
 # Configurar CORS para permitir peticiones desde el frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Cambia "*" por el dominio del frontend en producción
+    allow_origins=[
+        "http://localhost:3000",  # Cambia esto por el puerto que uses para tu frontend local
+        "http://localhost:8000"],  # Cambia "*" por el dominio del frontend en producción
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

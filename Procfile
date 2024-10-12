@@ -1,1 +1,1 @@
-web: uvicorn datawave:app --host 0.0.0.0 --port ${PORT:-5000}
+web: uvicorn datawave:app --host 0.0.0.0 --port 8000
