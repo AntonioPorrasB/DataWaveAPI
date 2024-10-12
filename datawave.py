@@ -1,6 +1,7 @@
 import re
 import requests
 import time
+import os  # Asegúrate de importar os
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -8,8 +9,8 @@ from typing import List
 from groq import Groq
 
 app = FastAPI()
-app.title="DataWave App"
-app.version="3.0.0"
+app.title = "DataWave App"
+app.version = "3.0.0"
 
 client = Groq(api_key="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")
 
@@ -25,6 +26,10 @@ app.add_middleware(
 # Modelo de entrada para la URL de la publicación
 class FacebookPost(BaseModel):
     link: str
+
+@app.get("/")
+async def read_root():
+    return {"message": "DataWave API is running."}
 
 def get_facebook_comments(post_url):
     access_token = 'EAANInzT2Im8BO3aSNZB58ZAwSTaTTb3TRxTGQYWvQnk1IPv50oK6G35RW2EcRaOvkTIAazHRVWZCT9pnCCcKbWFPNaC21Ovmbh6MQSZAAlVj9QAoTLLuFvDTD09MX4AYGXoImvC7Xbn7JJhaeUrBLZCy01FRCrSXrfZAK06n3u0TiXr0ZCYD7gieaUJbWdZBXT3i'
@@ -126,4 +131,5 @@ def analyze(post: FacebookPost):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("datawave:app", host="0.0.0.0", port=8000, reload=True)
+    port = int(os.environ.get("PORT", 8000))  # Cambia a usar la variable de entorno PORT
+    uvicorn.run(app, host="0.0.0.0", port=port, reload=True)
