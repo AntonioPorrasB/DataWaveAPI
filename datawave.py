@@ -20,8 +20,8 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",  # Cambia esto por el puerto que uses para tu frontend local
         "http://localhost:8000", # Para tu frontend local (ej. React, Vue, etc.)
-        "https://datawaveapi.onrender.com"
-        "https://softwave-innovate.tech"
+        "https://datawaveapi.onrender.com",
+        "https://softwave-innovate.tech",
         "https://softwaveapi.onrender.com"],  # Cambia "*" por el dominio del frontend en producción
         
     allow_credentials=True,
