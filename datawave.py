@@ -39,7 +39,7 @@ async def read_root():
 
 def get_facebook_comments(post_url):
     #EAANInzT2Im8BO3aSNZB58ZAwSTaTTb3TRxTGQYWvQnk1IPv50oK6G35RW2EcRaOvkTIAazHRVWZCT9pnCCcKbWFPNaC21Ovmbh6MQSZAAlVj9QAoTLLuFvDTD09MX4AYGXoImvC7Xbn7JJhaeUrBLZCy01FRCrSXrfZAK06n3u0TiXr0ZCYD7gieaUJbWdZBXT3i
-    access_token = 'EAANInzT2Im8BO8ZBqRecUHyWs3LNGWOiTMMfPivbQNdqlx2AxLJZBTlnBMAQ8TFscl8sqrTzc76aCykQ7FtaKusEZCQuEFNqZA0mt2BJPxrVg4eYSjyMiqN0nk9MuHcZCN0BYtb0ncWQeRhRcMggEsupXfZB760p4aHZAZB2IBPrUbNEHPUhZAZBqQfDgl'
+    access_token = 'EAANInzT2Im8BOZCM7Omj3hxGAHN8ZAgvBIvU1NQI99nsn1wMZBohHqX29K5TWLeMoYFjXDSZAwQhCvEsMeloCFaYkUf7hRrBO2RpPh5RSUY8CTE6KtiQlMDN7rKhkNADzMYZAznREsTZCblIhkZCYeaPmkRilZAXZBvoCA0EnW3fYbrwfMUcDOW8CsZClhnjWGKkhND0BNE9WzNJNSZB8qXIZCrmgvqV'
     post_id_match = re.search(r"=(\d+)", post_url)
     if not post_id_match:
         raise HTTPException(status_code=400, detail="No se pudo extraer el post_id de la URL.")
