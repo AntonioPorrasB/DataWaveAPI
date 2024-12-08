@@ -38,7 +38,8 @@ async def read_root():
     return {"message": "DataWave API is running."}
 
 def get_facebook_comments(post_url):
-    access_token = 'EAANInzT2Im8BO3aSNZB58ZAwSTaTTb3TRxTGQYWvQnk1IPv50oK6G35RW2EcRaOvkTIAazHRVWZCT9pnCCcKbWFPNaC21Ovmbh6MQSZAAlVj9QAoTLLuFvDTD09MX4AYGXoImvC7Xbn7JJhaeUrBLZCy01FRCrSXrfZAK06n3u0TiXr0ZCYD7gieaUJbWdZBXT3i'
+    #EAANInzT2Im8BO3aSNZB58ZAwSTaTTb3TRxTGQYWvQnk1IPv50oK6G35RW2EcRaOvkTIAazHRVWZCT9pnCCcKbWFPNaC21Ovmbh6MQSZAAlVj9QAoTLLuFvDTD09MX4AYGXoImvC7Xbn7JJhaeUrBLZCy01FRCrSXrfZAK06n3u0TiXr0ZCYD7gieaUJbWdZBXT3i
+    access_token = 'EAANInzT2Im8BO8ZBqRecUHyWs3LNGWOiTMMfPivbQNdqlx2AxLJZBTlnBMAQ8TFscl8sqrTzc76aCykQ7FtaKusEZCQuEFNqZA0mt2BJPxrVg4eYSjyMiqN0nk9MuHcZCN0BYtb0ncWQeRhRcMggEsupXfZB760p4aHZAZB2IBPrUbNEHPUhZAZBqQfDgl'
     post_id_match = re.search(r"=(\d+)", post_url)
     if not post_id_match:
         raise HTTPException(status_code=400, detail="No se pudo extraer el post_id de la URL.")
