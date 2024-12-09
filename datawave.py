@@ -7,10 +7,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
 from groq import Groq
+from collections import Counter
 
 app = FastAPI()
 app.title = "DataWave App"
-app.version = "3.0.0"
+app.version = "3.5.0"
 
 client = Groq(api_key="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")
 
@@ -33,12 +34,24 @@ app.add_middleware(
 class FacebookPost(BaseModel):
     link: str
 
+temas_relevantes = {
+    "Servicio al Cliente": ["servicio", "atención", "cliente", "soporte"],
+    "Calidad del Producto": ["calidad", "producto", "bueno", "defectuoso"],
+    "Experiencia de Usuario": ["experiencia", "usuario", "amigable", "complicado"],
+    "Precio": ["precio", "costo", "económico", "caro"]
+}
+
+excluded_words = [
+    "de", "la", "es", "y", "en", "que", "el", "a", "los", "con", "por", "un", "una", "este", "esta", "esto", "mi", "me"
+]
+
 @app.get("/")
 async def read_root():
     return {"message": "DataWave API is running."}
 
 def get_facebook_comments(post_url):
-    access_token = 'EAANInzT2Im8BO3aSNZB58ZAwSTaTTb3TRxTGQYWvQnk1IPv50oK6G35RW2EcRaOvkTIAazHRVWZCT9pnCCcKbWFPNaC21Ovmbh6MQSZAAlVj9QAoTLLuFvDTD09MX4AYGXoImvC7Xbn7JJhaeUrBLZCy01FRCrSXrfZAK06n3u0TiXr0ZCYD7gieaUJbWdZBXT3i'
+    #EAANInzT2Im8BOZCM7Omj3hxGAHN8ZAgvBIvU1NQI99nsn1wMZBohHqX29K5TWLeMoYFjXDSZAwQhCvEsMeloCFaYkUf7hRrBO2RpPh5RSUY8CTE6KtiQlMDN7rKhkNADzMYZAznREsTZCblIhkZCYeaPmkRilZAXZBvoCA0EnW3fYbrwfMUcDOW8CsZClhnjWGKkhND0BNE9WzNJNSZB8qXIZCrmgvqV
+    access_token = 'EAANInzT2Im8BO7mXxHYTu6Uy36TZAzaxgQQPckyLCNPU9UDHTYQ8OvQWdgayw1hU5rx52RzH1hbHZCN1x2AtnGI1hpI2UIzc1Sd04yB9Ff5WovfiaZBzzo51jCZCRWm83Si1Aqr9KiDk4HbQSiCyo4X96tJDRbdWZAGCca5hdOaJJqDQGapoA4HUtmxYeJM6M'
     post_id_match = re.search(r"=(\d+)", post_url)
     if not post_id_match:
         raise HTTPException(status_code=400, detail="No se pudo extraer el post_id de la URL.")
@@ -119,6 +132,27 @@ def analyze_sentiment_in_batches(cleaned_comments, batch_size=50):
     
     return comment_classifications
 
+def classify_comments_by_topics(cleaned_comments):
+    topic_counts = {topic: 0 for topic in temas_relevantes.keys()}
+    topic_counts["Otro"] = 0
+
+    for comment in cleaned_comments:
+        matched = False
+        for topic, keywords in temas_relevantes.items():
+            if any(keyword in comment for keyword in keywords):
+                topic_counts[topic] += 1
+                matched = True
+                break
+        if not matched:
+            topic_counts["Otro"] += 1
+
+    return topic_counts
+
+def get_most_frequent_words(cleaned_comments, min_frequency=3):
+    words = [word for comment in cleaned_comments for word in comment.split() if word not in excluded_words]
+    word_counts = Counter(words)
+    return {word: count for word, count in word_counts.items() if count >= min_frequency}
+
 @app.post("/analyze")
 def analyze(post: FacebookPost):
     comments = get_facebook_comments(post.link)
@@ -128,11 +162,20 @@ def analyze(post: FacebookPost):
 
     positive_count = sum(1 for c in classified_comments if c['sentiment'] == "positivo")
     negative_count = sum(1 for c in classified_comments if c['sentiment'] == "negativo")
+    topic_counts = classify_comments_by_topics(cleaned_comments)
+    frequent_words = get_most_frequent_words(cleaned_comments)
+    
+    # Convertir el recuento de temas en una lista de objetos
+    topics_list = [{"name": key, "count": value} for key, value in topic_counts.items()]
+    words_list = [{"word": word, "count": count} for word, count in frequent_words.items()]
 
     return {
         "negative_count": negative_count,
         "positive_count": positive_count,
-        "classified_comments": classified_comments
+        "classified_comments": classified_comments,
+        "topics": topics_list,
+        "frequent_words": words_list,
+        
     }
 
 if __name__ == "__main__":
