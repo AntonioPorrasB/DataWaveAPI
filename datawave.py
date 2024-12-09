@@ -42,7 +42,8 @@ temas_relevantes = {
 }
 
 excluded_words = [
-    "de", "la", "es", "y", "en", "que", "el", "a", "los", "con", "por", "un", "una", "este", "esta", "esto", "mi", "me"
+    "de", "la", "es", "y", "en", "que", "el", "a", "los", "con", "por", "un", "una", "este", "esta", "esto", "mi", "me",
+    "lo", "estoy", "mí", "las", "son", "he", "alguien", "no", "ha",
 ]
 
 @app.get("/")
